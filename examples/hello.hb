@@ -1,12 +1,14 @@
-@text
+;@outtext
 ; Prints "Hello, world".
 
-    #
-    ^
-    ^
-    ^
-    ^
-    ^
+     #
+     ^
+     ^
+     ^
+     ^
+     ^
+     ^
+    >^<
  >  ^<v
  ^ >v<<
   v
