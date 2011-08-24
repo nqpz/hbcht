@@ -9,7 +9,7 @@ setup(
     author_email='ns@metanohi.name',
     package_dir={'': '.'},
     py_modules=['hbcht'],
-    scripts=['hcbht'],
+    scripts=['hbcht'],
     url='http://metanohi.name/projects/hbcht/',
     license='AGPLv3+',
     description='A combined interpreter and compiler for the Half-Broken Car in Heavy Traffic programming language',

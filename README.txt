@@ -68,20 +68,25 @@ ahead, you can turn right, and you can reverse.
 
 Markers
 -------
+
 ::
+
   o car
   # exit, return/print
 
+
 Operations
 ----------
+
 ::
+
   > go right, next memory cell
   < go left, previous memory cell
   ^ go up, increment
   v go down, decrement
   / go right if the current memory cell has the same value as the previous
-  / memory cell, else continue (if the previous memory cell does not exist,
-  / its value is zero)
+    memory cell, else continue (if the previous memory cell does not exist,
+    its value is zero)
 
 Rules
 -----
