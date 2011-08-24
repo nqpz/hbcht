@@ -80,8 +80,8 @@ Operations
   ^ go up, increment
   v go down, decrement
   / go right if the current memory cell has the same value as the previous
-    memory cell, else continue (if the previous memory cell does not exist,
-    its value is zero)
+  / memory cell, else continue (if the previous memory cell does not exist,
+  / its value is zero)
 
 Rules
 -----
@@ -99,10 +99,11 @@ Rules
   feature is valid, but not perfect (note that hbcht's C translator uses
   32-bit ints and is thereby not perfect).
 
-If a program file contains a line that starts with `@intext', it will see input
-as text and convert the text to ordinals before running the core function.
+If a program file contains a line that starts with ``@intext``, it will see
+input as text and convert the text to ordinals before running the core
+function.
 
-If a program file contains a line that starts with `@outtext', it will show
+If a program file contains a line that starts with ``@outtext``, it will show
 output as a text string instead of a list of numbers.
 
 
