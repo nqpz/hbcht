@@ -64,7 +64,7 @@ _path_to_dir_map = {
     }
 
 _language_text_to_const_map = {
-    'hbc': HBCHT, 'py': PYTHON, 'python': PYTHON, 'c': C
+    'hbc': HBCHT, 'hbcht': HBCHT, 'py': PYTHON, 'python': PYTHON, 'c': C
     }
 
 _opcode_to_const_map = {ord(k): v for k, v in {
