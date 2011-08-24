@@ -104,6 +104,9 @@ Rules
   feature is valid, but not perfect (note that hbcht's C translator uses
   32-bit ints and is thereby not perfect).
 
+A semicolon denotes a comment. Anything from the semicolon to the end of the
+line is ignored.
+
 If a program file contains a line that starts with ``@intext``, it will see
 input as text and convert the text to ordinals before running the core
 function.
