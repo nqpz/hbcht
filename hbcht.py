@@ -111,9 +111,14 @@ def run(*inputs, **kwds):
     for i in range(len(inputs)):
         cells[i] = inputs[i]
     cells = collections.defaultdict(int, cells)
+{codebody}
+    action = action_0
     i, j = 0, random.choice((0, {codebeginnings}))
     while True:
-{codebody}
+        ret = action(i)
+        if ret is None:
+            break
+        action, i = ret
     cells = sorted(filter(lambda kv: kv[1] != 0, cells.items()),
                    key=lambda kv: kv[0])
 {outputconv}
@@ -823,17 +828,17 @@ class CarProgram:
     @staticmethod
     def _python_compile(f, funconly, commands, begs, inptext, outtext):
         gotos = CarProgram._get_gotos(commands)
-        code, ddd, dd, d = '', ' ' * 4, ' ' * 8, ' ' * 12
-        code += dd + 'if j == 0:\n'
+        code, ddd, dd, d = '', ' ' * 0, ' ' * 4, ' ' * 8
+        code += dd + 'def action_0(i):\n'
         j = 0
         last_had_skip = False
         for x, a in commands:
             if j in begs:
-                code += dd + 'elif j == {}:\n'.format(j)
+                code += dd + 'def action_{}(i):\n'.format(j)
             elif j in gotos:
                 if not last_had_skip:
-                    code += d + 'j = {j}\n'.format(j=j)
-                code += dd + 'elif j == {j}:\n'.format(j=j)
+                    code += d + 'return (action_{j}, i)\n'.format(j=j)
+                code += dd + 'def action_{j}(i):\n'.format(j=j)
             if x == DECREMENT:
                 code += d + 'cells[i] -= {}\n'.format(a)
             elif x == INCREMENT:
@@ -843,14 +848,12 @@ class CarProgram:
             elif x == NEXT:
                 code += d + 'i += {}\n'.format(a)
             elif x == GOTO:
-                code += d + 'j = {}\n'.format(a) + \
-                    d + 'continue\n'
+                code += d + 'return (action_{}, i)\n'.format(a)
             elif x == IF:
                 code += d + 'if cells[i] != cells[i - 1]:\n' + \
-                    d + ddd + 'j = {}\n'.format(a) + \
-                    d + ddd + 'continue\n'
+                    d + dd + 'return (action_{}, i)\n'.format(a)
             elif x == EXIT:
-                code += d + 'break\n'
+                code += d + 'return None\n'
                 if not j + 1 in begs and j + 1 not in gotos:
                     code += dd + 'elif j == {}:\n'.format(j + 1)
             last_had_skip = x in (GOTO, EXIT)
