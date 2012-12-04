@@ -826,11 +826,14 @@ class CarProgram:
         code, ddd, dd, d = '', ' ' * 4, ' ' * 8, ' ' * 12
         code += dd + 'if j == 0:\n'
         j = 0
+        last_had_skip = False
         for x, a in commands:
             if j in begs:
                 code += dd + 'elif j == {}:\n'.format(j)
             elif j in gotos:
-                code += d + ('j = {j}\n' + dd + 'elif j == {j}:\n').format(j=j)
+                if not last_had_skip:
+                    code += d + 'j = {j}\n'.format(j=j)
+                code += dd + 'elif j == {j}:\n'.format(j=j)
             if x == DECREMENT:
                 code += d + 'cells[i] -= {}\n'.format(a)
             elif x == INCREMENT:
@@ -850,6 +853,7 @@ class CarProgram:
                 code += d + 'break\n'
                 if not j + 1 in begs and j + 1 not in gotos:
                     code += dd + 'elif j == {}:\n'.format(j + 1)
+            last_had_skip = x in (GOTO, EXIT)
             j += 1
 
         if not funconly:
@@ -883,12 +887,15 @@ class CarProgram:
 
         gotos = CarProgram._get_gotos(commands)
         j = 0
+        last_had_skip = False
         write('{}0: \\\n'.format(ht))
         for x, a in commands:
             if j in begs:
                 write('{}{}: \\\n'.format(ht, j))
             elif j in gotos:
-                write(('goto {h}{j}; \\\n{h}{j}: \\\n').format(h=ht, j=j))
+                if not last_had_skip:
+                    write('goto {h}{j}; \\\n'.format(h=ht, j=j))
+                write('{h}{j}: \\\n'.format(h=ht, j=j))
             if x == DECREMENT:
                 write('hbcht_dec_cell(cells, i, {}); \\\n'.format(a))
             elif x == INCREMENT:
@@ -907,6 +914,7 @@ hbcht_get_cell_value(cells, i - 1)) \\\n    goto {}{}; \\\n'.format(ht, a))
                 if not j + 1 in begs and j + 1 not in gotos:
                     write('{}{}: \\\n'.format(ht, j + 1))
             j += 1
+            last_had_skip = x in (GOTO, EXIT)
         
         f.write(_c_template)
         if not funconly:
@@ -1095,13 +1103,15 @@ when compiling, overwrite the output file if it exists
                        outputastext=o.outputastext)
         c.load_data()
         out = _run(c)
+        if out is not None:
+            print(out, end='')
+    except CarError as e:
+        print('hbcht: error:', str(e), file=sys.stderr)
     except Exception as e:
         print('hbcht: error:', str(e), file=sys.stderr)
         import traceback
         print(traceback.format_exc().rstrip(), file=sys.stderr)
         sys.exit(1)
-    if out is not None:
-        print(out, end='')
 
 if __name__ == '__main__':
     parse_args()
