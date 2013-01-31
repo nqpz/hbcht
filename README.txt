@@ -11,14 +11,15 @@ hbcht is a Python 3.1+ combined compiler/interpreter for the language.
 License
 =======
 
-hbcht is free software under the terms of the GNU Affero General Public License
-version 3 (or any later version). This is version 0.1.0 of the program.
+mege is free software under the terms of the Do What The Fuck You Want To Public
+License (WTFPL); see the file COPYING.txt. The author of mege is Niels G. W. Serup,
+contactable at ngws@metanohi.name.
 
 Contact
 =======
 
-The author of hbcht is Niels Serup. Bug reports and suggestions should be sent
-to ns@metanohi.name for the time being.
+The author of hbcht is Niels G. W. Serup. Bug reports and suggestions should be sent
+to ngws@metanohi.name for the time being.
 
 
 Installation
@@ -39,9 +40,9 @@ Examples are available in the ``examples`` directory.
 
 Way #2
 ------
-Just run this::
+Just run something like this::
 
-  # pip-3.1 install hbcht
+  # pip-3 install hbcht
 
 Note that this will not make any examples available.
 
@@ -134,9 +135,7 @@ To find out how to use it, run::
 Examples
 --------
 
-There are a few examples in the ``examples`` directory. If someone insists they
-qualify as copyrightable material, they are available under the Creative
-Commons Zero 1.0 license.
+There are a few examples in the ``examples`` directory.
 
 
 Development
@@ -146,13 +145,3 @@ hbcht uses Git for code management. The newest (and sometimes unstable) code
 is available at::
 
   $ git clone git://gitorious.org/hbcht/hbcht.git
-
-
-This document
-=============
-
-Copyright (C) 2011 Niels Serup
-
-Copying and distribution of this file, with or without modification, are
-permitted in any medium without royalty provided the copyright notice and this
-notice are preserved.  This file is offered as-is, without any warranty.

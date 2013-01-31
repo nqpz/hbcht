@@ -3,20 +3,13 @@
 # hbcht: a combined interpreter and compiler for the Half-Broken Car in Heavy
 # Traffic programming language
 
-# Copyright (C) 2011  Niels Serup
+# Copyright (C) 2011, 2012, 2013  Niels G. W. Serup
 
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Affero General Public License as published by the Free
-# Software Foundation, either version 3 of the License, or (at your option) any
-# later version.
-
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
-# details.
-
-# You should have received a copy of the GNU Affero General Public License
-# along with This program.  If not, see <http://www.gnu.org/licenses/>.
+# This program is free software. It comes without any warranty, to
+# the extent permitted by applicable law. You can redistribute it
+# and/or modify it under the terms of the Do What The Fuck You Want
+# To Public License, Version 2, as published by Sam Hocevar. See
+# the COPYING.txt file or http://www.wtfpl.net/ for more details.
 
 """
 Half-Broken Car in Heavy Traffic is an esoteric programming language, and hbcht
@@ -57,7 +50,7 @@ def _traverse(it):
     ('NOP', 'DECREMENT', 'INCREMENT', 'PREV', 'NEXT', 'IF', 'GOTO', 'EXIT',
      'CAR',
      'UP', 'RIGHT', 'DOWN', 'LEFT',
-     'HBCHT', 'PYTHON', 'C'
+     'HBCHT', 'PYTHON', 'C', 'BRAINFUCK'
      ))
 
 _direction_text_to_const_map = {
@@ -73,7 +66,8 @@ _path_to_dir_map = {
     }
 
 _language_text_to_const_map = {
-    'hbc': HBCHT, 'hbcht': HBCHT, 'py': PYTHON, 'python': PYTHON, 'c': C
+    'hbc': HBCHT, 'hbcht': HBCHT, 'py': PYTHON, 'python': PYTHON, 'c': C,
+#    'bf': BRAINFUCK, 'brainfuck': BRAINFUCK
     }
 
 _opcode_to_const_map = {ord(k): v for k, v in {
@@ -82,7 +76,7 @@ _opcode_to_const_map = {ord(k): v for k, v in {
     }.items()}
 
 _valid_directions = (UP, RIGHT, DOWN, LEFT)
-_accepted_languages = (HBCHT, PYTHON, C)
+_accepted_languages = (HBCHT, PYTHON, C) #, BRAINFUCK)
 _base_mem_ops = (DECREMENT, INCREMENT, PREV, NEXT)
 
 _ops_to_dirs_map = {
@@ -804,15 +798,15 @@ class CarProgram:
         begs = self.command_beginnings
         inptext, outtext = self.metadata['inputastext'], \
             self.metadata['outputastext']
-        if lang == HBCHT:
-            self._hbcht_compile(f, commands, begs, inptext, outtext)
-        elif lang == PYTHON:
-            self._python_compile(f, funconly, commands, begs, inptext, outtext)
-        elif lang == C:
-            self._c_compile(f, funconly, commands, begs, inptext, outtext)
+        {
+            HBCHT: self._hbcht_compile,
+            PYTHON: self._python_compile,
+            C: self._c_compile,
+            BRAINFUCK: self._pseudo_brainfuck_compile
+        }[lang](f, funconly, commands, begs, inptext, outtext)
 
     @staticmethod
-    def _hbcht_compile(f, commands, begs, inptext, outtext):
+    def _hbcht_compile(f, funconly, commands, begs, inptext, outtext):
         f.write(b'\1hbcht\1\2' +
                 (b'\1' if inptext else b'\2') +
                 (b'\1' if outtext else b'\2'))
@@ -855,7 +849,7 @@ class CarProgram:
             elif x == EXIT:
                 code += d + 'return None\n'
                 if not j + 1 in begs and j + 1 not in gotos:
-                    code += dd + 'elif j == {}:\n'.format(j + 1)
+                    code += dd + 'def action_{}(i):\n'.format(j + 1)
             last_had_skip = x in (GOTO, EXIT)
             j += 1
 
@@ -873,6 +867,49 @@ class CarProgram:
         if not funconly:
             f.write(_python_code_cmdline)
 
+    @staticmethod
+    def _pseudo_brainfuck_compile(f, funconly, commands, begs, inptext, outtext):
+        raise Exception('compiler not implented yet')
+        # These are just mutterings.
+        gotos = CarProgram._get_gotos(commands)
+        code = ''
+        code += '0\n'
+        j = 0
+        last_had_skip = False
+        for x, a in commands:
+            if j in begs:
+                code += '\n{}:'.format(j)
+            elif j in gotos:
+                if not last_had_skip:
+                    code += '{j}'.format(j=j)
+                code += '\n{j}:'.format(j=j)
+            if x == DECREMENT:
+                code += '-' * a
+            elif x == INCREMENT:
+                code += '+' * a
+            elif x == PREV:
+                code += '<' * a
+            elif x == NEXT:
+                code += '>' * a
+            elif x == GOTO:
+                code += '{}'.format(a)
+            elif x == IF:
+                code += '''
+<[)+>+<(-])>[-<(+)>]<(>
+[)+>+<(-])>[-<(+)>]
+<[->-<]
+[[-]<[-]>({}][-]<[-]>(
+'''.format(a)
+            elif x == EXIT:
+                code += '#'
+                if not j + 1 in begs and j + 1 not in gotos:
+                    code += '\n{}:'.format(j + 1)
+            last_had_skip = x in (GOTO, EXIT)
+            j += 1
+
+        f.write(b'// Start in one of these states: 0, ' + ', '.join(map(str, begs)).encode() + b'\n')
+        f.write(code.encode())
+            
     @staticmethod
     def _c_compile(f, funconly, commands, begs, inptext, outtext):
         f.write(b'// Generated by hbcht <http://metanohi.name/projects/hbcht/>\n')
@@ -1037,7 +1074,7 @@ random. Can be set more than once.
                       metavar='LANGUAGE', help='''
 choose which language the program should be compiled into. This option is only
 necessary if the language cannot be guessed from the file extension of
-OUTFILE. Valid choices: python, c, hbc
+OUTFILE. Valid choices: python, c, bf, hbc
 ''')
 
     parser.add_option('-c', '--compile', dest='compile',
