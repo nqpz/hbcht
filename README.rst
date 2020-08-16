@@ -1,4 +1,3 @@
-
 ========================================
 Half-Broken Car in Heavy Traffic (HBCHT)
 ========================================
@@ -25,26 +24,13 @@ to ngws@metanohi.name for the time being.
 Installation
 ============
 
-Way #1
-------
 Get the newest version of hbcht at
-http://metanohi.name/projects/hbcht/ or at
-http://pypi.python.org/pypi/hbcht
+https://github.com/nqpz/hbcht/
 
 Extract hbcht from the downloaded file, cd into it and run this in a
 terminal::
 
   # python3 setup.py install
-
-Examples are available in the ``examples`` directory.
-
-Way #2
-------
-Just run something like this::
-
-  # pip-3 install hbcht
-
-Note that this will not make any examples available.
 
 
 Language documentation
@@ -136,12 +122,3 @@ Examples
 --------
 
 There are a few examples in the ``examples`` directory.
-
-
-Development
-===========
-
-hbcht uses Git for code management. The newest (and sometimes unstable) code
-is available at::
-
-  $ git clone git://gitorious.org/hbcht/hbcht.git
