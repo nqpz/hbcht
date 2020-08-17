@@ -13,7 +13,7 @@ setup(
     url='http://metanohi.name/projects/hbcht/',
     license='WTFPL',
     description='A combined interpreter and compiler for the Half-Broken Car in Heavy Traffic programming language',
-    long_description=open('README.txt').read(),
+    long_description=open('README.rst').read(),
     classifiers=['Development Status :: 3 - Alpha',
                  'Intended Audience :: Developers',
                  'Intended Audience :: Education',
