@@ -49,9 +49,10 @@ The car can drive in four directions: up, right, down, and left. Because of the
 chaos, you never know which direction the car is headed when the program
 starts. This makes it easy to randomize the output.
 
-To make things worse (actually, it's to make programming in HBCHT possible),
-you cannot turn left because your car is half-broken. You can drive straight
-ahead, you can turn right, and you can reverse.
+To make things worse (actually, it's to make programming in HBCHT possible), you
+cannot turn left (relative to your current direction) because your car is
+half-broken. You can drive straight ahead, you can turn right, and you can
+reverse.
 
 Markers
 -------
